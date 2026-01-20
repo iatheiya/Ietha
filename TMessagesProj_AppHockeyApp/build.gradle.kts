@@ -3,10 +3,6 @@ plugins {
   alias(libs.plugins.googleServices)
   alias(libs.plugins.firebaseCrashlytics)
 }
-repositories {
-  mavenCentral()
-  google()
-}
 configurations {
   "compile".exclude(group = "com.google.firebase", module = "firebase-core")
   "compile".exclude(group = "androidx.recyclerview", module = "recyclerview")
