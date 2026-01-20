@@ -25,7 +25,9 @@ android {
     versionName = APP_VERSION_NAME
     ndkVersion = "21.4.7075529"
     multiDexEnabled = true
-    vectorDrawables.generatedDensities = listOf("mdpi", "hdpi", "xhdpi", "xxhdpi")
+    vectorDrawables {
+      generatedDensities.addAll(listOf("mdpi", "hdpi", "xhdpi", "xxhdpi"))
+    }
     externalNativeBuild {
       cmake {
         version = "3.10.2"
