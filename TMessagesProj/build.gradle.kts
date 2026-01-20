@@ -74,6 +74,9 @@ android {
       }
     }
   }
+  buildFeatures {
+    buildConfig = true
+  }
   sourceSets {
     getByName("main").jniLibs.srcDirs = listOf("./jni/")
   }
@@ -158,7 +161,7 @@ android {
       ndk.debugSymbolLevel = "FULL"
       buildConfigField("String", "BUILD_VERSION_STRING", "\"$APP_VERSION_NAME\"")
       buildConfigField("String", "APP_CENTER_HASH", getProps("APP_CENTER_HASH_HARDCORE"))
-      buildConfigField("String", "BETA_URL", getProps("BETA_HARDCORE_URL"))
+      buildConfigField("String", "BETA_URL", getProps("APP_HARDCORE_URL"))
       buildConfigField("boolean", "DEBUG_VERSION", "true")
       buildConfigField("boolean", "DEBUG_PRIVATE_VERSION", "true")
       buildConfigField("boolean", "BUILD_HOST_IS_WINDOWS", isWindows.toString())
