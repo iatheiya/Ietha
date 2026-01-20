@@ -2,33 +2,27 @@ plugins {
     alias(libs.plugins.androidApplication)
     id("com.google.gms.google-services")
 }
-
 repositories {
     mavenCentral()
     google()
 }
-
 configurations {
     all {
         exclude(group = "com.google.firebase", module = "firebase-core")
         exclude(group = "androidx.recyclerview", module = "recyclerview")
     }
 }
-
 dependencies {
     implementation(project(":TMessagesProj"))
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(files("../TMessagesProj/libs/libgsaverification-client.aar"))
 }
-
 val APP_PACKAGE: String = findProperty("APP_PACKAGE")?.toString() ?: "org.telegram.messenger.regular"
 val APP_VERSION_CODE: String = findProperty("APP_VERSION_CODE")?.toString() ?: "1"
 val APP_VERSION_NAME: String = findProperty("APP_VERSION_NAME")?.toString() ?: "1.0.0"
-
 android {
     compileSdk = 35
     buildToolsVersion = "35.0.0"
-
     defaultConfig {
         applicationId = APP_PACKAGE
         minSdk = 21
@@ -63,7 +57,7 @@ android {
 
     sourceSets {
         getByName("main") {
-            jniLibs.setSrcDirs(listOf("../TMessagesProj/jni/"))
+            jniLibs.srcDir("../TMessagesProj/jni/")
         }
     }
 
@@ -96,7 +90,6 @@ android {
             applicationIdSuffix = ".beta"
             isMinifyEnabled = false
             isShrinkResources = false
-            isMultiDexEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "../TMessagesProj/proguard-rules.pro",
@@ -117,7 +110,6 @@ android {
             applicationIdSuffix = ".web"
             isMinifyEnabled = true
             isShrinkResources = false
-            isMultiDexEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "../TMessagesProj/proguard-rules.pro"
@@ -136,7 +128,6 @@ android {
             signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = false
-            isMultiDexEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "../TMessagesProj/proguard-rules.pro"
@@ -181,23 +172,34 @@ android {
             ext["abiVersionCode"] = 9
         }
     }
+}
 
-    applicationVariants.all {
-        val variant = this
-        outputs.all {
-            val output = this as? com.android.build.gradle.internal.api.BaseVariantOutputImpl
-            if (output != null) {
-                output.outputFileName = "app.apk"
-                val abiVersionCode = variant.productFlavors[0].ext["abiVersionCode"] as? Int ?: 0
-                output.versionCodeOverride = defaultConfig.versionCode!! * 10 + abiVersionCode
-            }
+androidComponents {
+    beforeVariants { selector ->
+        val buildTypeName = selector.buildType
+        val flavorNames = selector.productFlavors.map { it.second }
+        if (buildTypeName != "release" && !flavorNames.contains("afat")) {
+            selector.enable = false
         }
     }
 
-    variantFilter {
-        val names = flavors.map { it.name }
-        if (buildType.name != "release" && !names.contains("afat")) {
-            ignore = true
+    onVariants { variant ->
+        val flavorName = variant.productFlavors.firstOrNull { it.first == "minApi" }?.second
+        val abiVersionCode = when (flavorName) {
+            "bundleAfat" -> 1
+            "bundleAfat_SDK23" -> 2
+            "afat" -> 9
+            else -> 0
+        }
+
+        val baseVersionCode = android.defaultConfig.versionCode ?: 1
+        val newVersionCode = baseVersionCode * 10 + abiVersionCode
+
+        variant.outputs.forEach { output ->
+            output.versionCode.set(newVersionCode)
+            if (output is com.android.build.api.variant.VariantOutputImpl) {
+                output.outputFileName.set("app.apk")
+            }
         }
     }
 }
