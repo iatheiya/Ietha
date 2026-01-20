@@ -91,7 +91,7 @@ android {
       isShrinkResources = false
       isMultiDexEnabled = true
       proguardFiles(
-        getDefaultProguardFile("proguard-android.txt"),
+        getDefaultProguardFile("proguard-android-optimize.txt"),
         "../TMessagesProj/proguard-rules.pro",
         "../TMessagesProj/proguard-rules-beta.pro"
       )
