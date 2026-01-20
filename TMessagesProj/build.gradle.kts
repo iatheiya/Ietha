@@ -71,7 +71,7 @@ android {
     ndkVersion = "21.4.7075529"
 
     val commonProguardFiles = listOf(
-        getDefaultProguardFile("proguard-android.txt"),
+        getDefaultProguardFile("proguard-android-optimize.txt"),
         "../TMessagesProj/proguard-rules.pro",
         "../TMessagesProj/proguard-rules-beta.pro"
     )
