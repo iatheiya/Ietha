@@ -24,7 +24,7 @@ dependencies {
     implementation(libs.androidx.mediarouter)
     implementation(libs.nanohttpd)
     compileOnly(libs.checker.qual)
-    compileOnly(libs.checker.compat.qual)
+    compileOnly(libs.checker.bottom.qual)
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.config)
     implementation(libs.firebase.datatransport)
@@ -128,7 +128,7 @@ android {
 
     sourceSets {
         getByName("main") {
-            jniLibs.srcDir("jni")
+            jniLibs.srcDirs("jni")
         }
     }
 
