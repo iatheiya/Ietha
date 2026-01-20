@@ -1,7 +1,7 @@
 -keep public class com.google.android.gms.* { public *; }
 -keepnames @com.google.android.gms.common.annotation.KeepName class *
 -keepclassmembernames class * {
-    @com.google.android.gms.common.annotation.KeepName *;
+  @com.google.android.gms.common.annotation.KeepName *;
 }
 -keep class org.webrtc.* { *; }
 -keep class org.webrtc.audio.* { *; }
@@ -26,28 +26,15 @@
 -keep class org.telegram.ui.Stories.recorder.FfmpegAudioWaveformLoader { *; }
 -keep class androidx.mediarouter.app.MediaRouteButton { *; }
 -keepclassmembers class ** {
-    @android.webkit.JavascriptInterface <methods>;
+  @android.webkit.JavascriptInterface *;
 }
-
-# https://developers.google.com/ml-kit/known-issues#android_issues
 -keep class com.google.mlkit.nl.languageid.internal.LanguageIdentificationJni { *; }
-
-# Constant folding for resource integers may mean that a resource passed to this method appears to be unused. Keep the method to prevent this from happening.
 -keep class com.google.android.exoplayer2.upstream.RawResourceDataSource {
   public static android.net.Uri buildRawResourceUri(int);
 }
-
-# Methods accessed via reflection in DefaultExtractorsFactory
 -dontnote com.google.android.exoplayer2.ext.flac.FlacLibrary
--keepclassmembers class com.google.android.exoplayer2.ext.flac.FlacLibrary {
-
-}
-
-# Some members of this class are being accessed from native methods. Keep them unobfuscated.
--keep class com.google.android.exoplayer2.decoder.VideoDecoderOutputBuffer {
-  *;
-}
-
+-keepclassmembers class com.google.android.exoplayer2.ext.flac.FlacLibrary { *; }
+-keep class com.google.android.exoplayer2.decoder.VideoDecoderOutputBuffer { *; }
 -dontnote com.google.android.exoplayer2.ext.opus.LibopusAudioRenderer
 -keepclassmembers class com.google.android.exoplayer2.ext.opus.LibopusAudioRenderer {
   <init>(android.os.Handler, com.google.android.exoplayer2.audio.AudioRendererEventListener, com.google.android.exoplayer2.audio.AudioProcessor[]);
@@ -60,14 +47,10 @@
 -keepclassmembers class com.google.android.exoplayer2.ext.ffmpeg.FfmpegAudioRenderer {
   <init>(android.os.Handler, com.google.android.exoplayer2.audio.AudioRendererEventListener, com.google.android.exoplayer2.audio.AudioProcessor[]);
 }
-
-# Constructors accessed via reflection in DefaultExtractorsFactory
 -dontnote com.google.android.exoplayer2.ext.flac.FlacExtractor
 -keepclassmembers class com.google.android.exoplayer2.ext.flac.FlacExtractor {
   <init>();
 }
-
-# Constructors accessed via reflection in DefaultDownloaderFactory
 -dontnote com.google.android.exoplayer2.source.dash.offline.DashDownloader
 -keepclassmembers class com.google.android.exoplayer2.source.dash.offline.DashDownloader {
   <init>(android.net.Uri, java.util.List, com.google.android.exoplayer2.offline.DownloaderConstructorHelper);
@@ -80,8 +63,6 @@
 -keepclassmembers class com.google.android.exoplayer2.source.smoothstreaming.offline.SsDownloader {
   <init>(android.net.Uri, java.util.List, com.google.android.exoplayer2.offline.DownloaderConstructorHelper);
 }
-
-# Constructors accessed via reflection in DownloadHelper
 -dontnote com.google.android.exoplayer2.source.dash.DashMediaSource$Factory
 -keepclasseswithmembers class com.google.android.exoplayer2.source.dash.DashMediaSource$Factory {
   <init>(com.google.android.exoplayer2.upstream.DataSource$Factory);
@@ -94,16 +75,10 @@
 -keepclasseswithmembers class com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource$Factory {
   <init>(com.google.android.exoplayer2.upstream.DataSource$Factory);
 }
-
-# Huawei Services
 -keep class com.huawei.hianalytics.**{ *; }
 -keep class com.huawei.updatesdk.**{ *; }
 -keep class com.huawei.hms.**{ *; }
-
-# Don't warn about checkerframework and Kotlin annotations
 -dontwarn org.checkerframework.**
 -dontwarn javax.annotation.**
-
-# Use -keep to explicitly keep any other classes shrinking would remove
 -dontoptimize
 -dontobfuscate
