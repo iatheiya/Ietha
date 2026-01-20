@@ -70,12 +70,6 @@ android {
     buildToolsVersion = "35.0.0"
     ndkVersion = "21.4.7075529"
 
-    val commonProguardFiles = listOf(
-        getDefaultProguardFile("proguard-android-optimize.txt"),
-        "../TMessagesProj/proguard-rules.pro",
-        "../TMessagesProj/proguard-rules-beta.pro"
-    )
-
     fun com.android.build.api.dsl.BuildType.applyCommon(
         minify: Boolean,
         multiDex: Boolean,
@@ -106,6 +100,15 @@ android {
         buildConfigField("int", "VERSION_NUM", versionNum.toString())
 
         isJniDebuggable = jniDebugVal
+
+        val proguardList = mutableListOf(getDefaultProguardFile("proguard-android-optimize.txt"))
+        if (useFullProguardList) {
+            proguardList.add(file("../TMessagesProj/proguard-rules.pro"))
+            proguardList.add(file("../TMessagesProj/proguard-rules-beta.pro"))
+        } else {
+            proguardList.add(file("../TMessagesProj/proguard-rules.pro"))
+        }
+        proguardFiles(*proguardList.toTypedArray())
     }
 
     defaultConfig {
@@ -131,7 +134,7 @@ android {
 
     sourceSets {
         getByName("main") {
-            jniLibs.srcDir("jni")
+            jniLibs.setSrcDirs(listOf("jni"))
         }
     }
 
@@ -256,7 +259,6 @@ tasks.register("checkVisibility") {
         val isPrivateBuild = gradle.startParameter.taskNames.any {
             it.contains("HA_private") || it.contains("HA_hardcore") || it.contains("Debug") || it.contains("Release")
         }
-
         val isPublicAllowed = !project.hasProperty("IS_PRIVATE") || !(project.property("IS_PRIVATE") as? Boolean ?: false)
 
         if (!isPrivateBuild && !isPublicAllowed) {
