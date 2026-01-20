@@ -1,0 +1,46 @@
+name: Bootstrap Gradle Wrapper
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.vfs.watch=false -Dkotlin.gradle.report.json=false -Dkotlin.gradle.report.html=false -Dkotlin.gradle.report.xml=false -Dkotlin.build.report.output=none
+      GRADLE_USER_HOME: ~/.gradle
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Install NDK
+        run: |
+          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;26.1.10909125"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '9.3.0'
+
+      - name: Generate Gradle wrapper
+        run: |
+          gradle wrapper --gradle-version 9.3.0 --warning-mode summary
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add gradlew gradlew.bat gradle/wrapper/
+          git commit -m "chore: update gradle wrapper to 9.3.0" || echo "No changes to commit"
+          git push
