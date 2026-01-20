@@ -117,7 +117,7 @@ android {
         minSdk = 21
 
         vectorDrawables {
-            generatedDensities.addAll(listOf("mdpi", "hdpi", "xhdpi", "xxhdpi"))
+            generatedDensities?.addAll(listOf("mdpi", "hdpi", "xhdpi", "xxhdpi"))
         }
 
         multiDexEnabled = true
@@ -136,7 +136,7 @@ android {
 
     sourceSets {
         getByName("main") {
-            jniLibs.srcDirs("jni")
+            jniLibs.srcDirs = listOf("jni")
         }
     }
 
