@@ -3,11 +3,6 @@ plugins {
   alias(libs.plugins.kotlinAndroid)
 }
 
-repositories {
-  mavenCentral()
-  google()
-}
-
 configurations {
   "compile".exclude(group = "com.google.firebase", module = "firebase-core")
   "compile".exclude(group = "androidx.recyclerview", module = "recyclerview")
