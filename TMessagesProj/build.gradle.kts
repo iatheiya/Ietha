@@ -126,7 +126,7 @@ android {
         targetSdk = 35
 
         vectorDrawables {
-            generatedDensities.addAll(listOf("mdpi", "hdpi", "xhdpi", "xxhdpi"))
+            generatedDensities = mutableSetOf("mdpi", "hdpi", "xhdpi", "xxhdpi")
         }
 
         multiDexEnabled = true
@@ -144,7 +144,9 @@ android {
     }
 
     sourceSets {
-        getByName("main").jniLibs.srcDirs = listOf("./jni/")
+        named("main") {
+            jniLibs.srcDir("jni")
+        }
     }
 
     externalNativeBuild {
