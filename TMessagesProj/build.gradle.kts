@@ -110,23 +110,14 @@ android {
         buildConfigField("boolean", "BUILD_HOST_IS_WINDOWS", isWindows.toString())
         buildConfigField("int", "VERSION_NUM", versionNum.toString())
 
-        try {
-            this::class.java.methods.find { it.name == "jniDebuggable" }?.let { method ->
-                try {
-                    method.invoke(this, jniDebugVal)
-                } catch (_: Throwable) {
-                }
-            }
-        } catch (_: Throwable) {
-        }
+        isJniDebuggable = jniDebugVal
     }
 
     defaultConfig {
         minSdk = 21
-        targetSdk = 35
 
         vectorDrawables {
-            generatedDensities = mutableSetOf("mdpi", "hdpi", "xhdpi", "xxhdpi")
+            generatedDensities.addAll(listOf("mdpi", "hdpi", "xhdpi", "xxhdpi"))
         }
 
         multiDexEnabled = true
@@ -144,8 +135,8 @@ android {
     }
 
     sourceSets {
-        named("main") {
-            jniLibs.srcDir("jni")
+        getByName("main") {
+            jniLibs.srcDirs("jni")
         }
     }
 
