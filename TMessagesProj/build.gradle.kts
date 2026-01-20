@@ -136,7 +136,7 @@ android {
 
     sourceSets {
         getByName("main") {
-            jniLibs.srcDirs = listOf("jni")
+            jniLibs.setSrcDirs(listOf("jni"))
         }
     }
 
