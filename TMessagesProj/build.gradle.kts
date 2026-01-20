@@ -1,17 +1,14 @@
 plugins {
     alias(libs.plugins.androidLibrary)
 }
-
 import java.util.Properties
 import java.io.FileInputStream
-
 configurations {
     all {
         exclude(group = "com.google.firebase", module = "firebase-core")
         exclude(group = "androidx.recyclerview", module = "recyclerview")
     }
 }
-
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.palette)
@@ -47,7 +44,6 @@ dependencies {
     implementation(libs.play.services.mlkit.image.labeling)
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
-
     constraints {
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
             because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
@@ -60,19 +56,15 @@ dependencies {
     implementation(libs.recaptcha)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 }
-
 val osName = System.getProperty("os.name") ?: ""
 val isWindows = osName.lowercase().contains("win")
 val APP_VERSION_NAME: String = findProperty("APP_VERSION_NAME")?.toString() ?: "1.0.0"
-
 android {
     compileSdk = 35
     buildToolsVersion = "35.0.0"
     ndkVersion = "21.4.7075529"
-
     fun com.android.build.api.dsl.BuildType.applyCommon(
         minify: Boolean,
-        multiDex: Boolean,
         versionNum: Int,
         appCenterHash: String?,
         betaUrl: String?,
@@ -134,7 +126,7 @@ android {
 
     sourceSets {
         getByName("main") {
-            jniLibs.setSrcDirs(listOf("jni"))
+            jniLibs.srcDir("jni")
         }
     }
 
@@ -158,7 +150,6 @@ android {
         getByName("debug") {
             applyCommon(
                 minify = false,
-                multiDex = true,
                 versionNum = 0,
                 appCenterHash = "",
                 betaUrl = getProps("BETA_PRIVATE_URL"),
@@ -172,7 +163,6 @@ android {
         create("HA_private") {
             applyCommon(
                 minify = true,
-                multiDex = true,
                 versionNum = 1,
                 appCenterHash = getProps("APP_CENTER_HASH_PRIVATE"),
                 betaUrl = getProps("BETA_PRIVATE_URL"),
@@ -186,7 +176,6 @@ android {
         create("HA_public") {
             applyCommon(
                 minify = true,
-                multiDex = true,
                 versionNum = 4,
                 appCenterHash = getProps("APP_CENTER_HASH_PUBLIC"),
                 betaUrl = getProps("APP_PUBLIC_URL"),
@@ -200,7 +189,6 @@ android {
         create("HA_hardcore") {
             applyCommon(
                 minify = true,
-                multiDex = true,
                 versionNum = 5,
                 appCenterHash = getProps("APP_CENTER_HASH_HARDCORE"),
                 betaUrl = getProps("APP_HARDCORE_URL"),
@@ -214,7 +202,6 @@ android {
         create("standalone") {
             applyCommon(
                 minify = true,
-                multiDex = true,
                 versionNum = 6,
                 appCenterHash = "",
                 betaUrl = "",
@@ -228,7 +215,6 @@ android {
         getByName("release") {
             applyCommon(
                 minify = true,
-                multiDex = true,
                 versionNum = 7,
                 appCenterHash = "",
                 betaUrl = "",
@@ -253,14 +239,12 @@ fun getProps(propName: String): String {
     }
     return ""
 }
-
 tasks.register("checkVisibility") {
     doFirst {
         val isPrivateBuild = gradle.startParameter.taskNames.any {
             it.contains("HA_private") || it.contains("HA_hardcore") || it.contains("Debug") || it.contains("Release")
         }
         val isPublicAllowed = !project.hasProperty("IS_PRIVATE") || !(project.property("IS_PRIVATE") as? Boolean ?: false)
-
         if (!isPrivateBuild && !isPublicAllowed) {
             throw GradleException("Building public version of private code!")
         }
@@ -275,7 +259,6 @@ tasks.register("checkVisibility") {
         }
     }
 }
-
 tasks.named("preBuild") {
     dependsOn("checkVisibility")
 }
