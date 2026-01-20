@@ -24,7 +24,7 @@ dependencies {
     implementation(libs.androidx.mediarouter)
     implementation(libs.nanohttpd)
     compileOnly(libs.checker.qual)
-    compileOnly(libs.checker.bottom.qual)
+    compileOnly(libs.checker.compat.qual)
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.config)
     implementation(libs.firebase.datatransport)
