@@ -83,7 +83,7 @@ android {
             ndk.debugSymbolLevel = "FULL"
         } catch (_: Throwable) {
         }
-        `buildConfigField("String", "BUILD_VERSION_STRING", "\"$APP_VERSION_NAME\"")
+        buildConfigField("String", "BUILD_VERSION_STRING", "\"$APP_VERSION_NAME\"")
         val appCenterLiteral = appCenterHash?.let { "\"$it\"" } ?: "\"\""
         val betaUrlLiteral = betaUrl?.let { "\"$it\"" } ?: "\"\""
 
@@ -104,12 +104,11 @@ android {
             proguardList.add(file("../TMessagesProj/proguard-rules.pro"))
         }
         proguardFiles(*proguardList.toTypedArray())
-        `
     }
 
     defaultConfig {
         minSdk = 21
-        `vectorDrawables {
+        vectorDrawables {
             generatedDensities?.addAll(listOf("mdpi", "hdpi", "xhdpi", "xxhdpi"))
         }
 
@@ -121,7 +120,6 @@ android {
                 arguments.addAll(listOf("-DANDROID_STL=c++_static", "-DANDROID_PLATFORM=android-21"))
             }
         }
-        `
     }
 
     buildFeatures {
@@ -157,7 +155,7 @@ android {
                 useFullProguardList = true
             )
         }
-        `create("HA_private") {
+        create("HA_private") {
             applyCommon(
                 minify = true,
                 versionNum = 1,
@@ -168,8 +166,8 @@ android {
                 jniDebugVal = false,
                 useFullProguardList = true
             )
-        }`
-        `create("HA_public") {
+        }
+        create("HA_public") {
             applyCommon(
                 minify = true,
                 versionNum = 4,
@@ -180,8 +178,8 @@ android {
                 jniDebugVal = false,
                 useFullProguardList = true
             )
-        }`
-        `create("HA_hardcore") {
+        }
+        create("HA_hardcore") {
             applyCommon(
                 minify = true,
                 versionNum = 5,
@@ -192,8 +190,8 @@ android {
                 jniDebugVal = false,
                 useFullProguardList = true
             )
-        }`
-        `create("standalone") {
+        }
+        create("standalone") {
             applyCommon(
                 minify = true,
                 versionNum = 6,
@@ -204,7 +202,7 @@ android {
                 jniDebugVal = false,
                 useFullProguardList = false
             )
-        }`
+        }
         getByName("release") {
             applyCommon(
                 minify = true,
@@ -238,7 +236,7 @@ tasks.register("checkVisibility") {
         val isPrivateBuild = gradle.startParameter.taskNames.any {
             it.contains("HA_private") || it.contains("HA_hardcore") || it.contains("Debug") || it.contains("Release")
         }
-        val isPublicAllowed = !project.hasProperty("IS_PRIVATE") || !(project.property("IS_PRIVATE") as? Boolean ?: false)
+        val isPublicAllowed = !project.hasProperty("IS_PRIVATE") || project.property("IS_PRIVATE").toString().toBoolean().not()
         if (!isPrivateBuild && !isPublicAllowed) {
             throw GradleException("Building public version of private code!")
         }
