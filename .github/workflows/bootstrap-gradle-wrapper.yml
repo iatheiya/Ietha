@@ -35,7 +35,7 @@ jobs:
 
       - name: Generate Gradle wrapper
         run: |
-          gradle wrapper --gradle-version 9.3.0 --warning-mode summary --warning-mode all --stacktrace --no-build-cache
+          gradle wrapper --gradle-version 9.3.0 summary --warning-mode all --stacktrace --no-build-cache
 
       - name: Commit and Push
         run: |
