@@ -1,4 +1,3 @@
-// === FILE: TMessagesProj/build.gradle.kts ===
 plugins {
     alias(libs.plugins.androidLibrary)
 }
