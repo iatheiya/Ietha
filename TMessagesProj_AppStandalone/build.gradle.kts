@@ -2,11 +2,6 @@ plugins {
   alias(libs.plugins.androidApplication)
 }
 
-repositories {
-  mavenCentral()
-  google()
-}
-
 configurations {
   "compile".exclude(group = "com.google.firebase", module = "firebase-core")
   "compile".exclude(group = "androidx.recyclerview", module = "recyclerview")
