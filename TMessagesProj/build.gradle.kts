@@ -76,10 +76,10 @@ android {
     buildToolsVersion = "35.0.0"
     ndkVersion = "21.4.7075529"
 
-    val commonProguardFiles = listOf(
+    val commonProguardFiles = arrayOf(
         getDefaultProguardFile("proguard-android.txt"),
-        "../TMessagesProj/proguard-rules.pro",
-        "../TMessagesProj/proguard-rules-beta.pro"
+        file("../TMessagesProj/proguard-rules.pro"),
+        file("../TMessagesProj/proguard-rules-beta.pro")
     )
 
     fun com.android.build.api.dsl.BuildType.applyCommon(
@@ -97,9 +97,9 @@ android {
         multiDexEnabled = multiDex
 
         if (useFullProguardList) {
-            proguardFiles(*commonProguardFiles.toTypedArray())
+            proguardFiles(*commonProguardFiles)
         } else {
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "../TMessagesProj/proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android.txt"), file("../TMessagesProj/proguard-rules.pro"))
         }
 
         try {
@@ -132,17 +132,11 @@ android {
     defaultConfig {
         minSdk = 21
         targetSdk = 35
-        try {
-            vectorDrawables {
-                val set = generatedDensities ?: mutableSetOf()
-                set.addAll(listOf("mdpi", "hdpi", "xhdpi", "xxhdpi"))
-                try {
-                    generatedDensities = set
-                } catch (_: Throwable) {
-                }
-            }
-        } catch (_: Throwable) {
+
+        vectorDrawables {
+            generatedDensities.addAll(listOf("mdpi", "hdpi", "xhdpi", "xxhdpi"))
         }
+
         multiDexEnabled = true
 
         externalNativeBuild {
@@ -158,7 +152,7 @@ android {
     }
 
     sourceSets {
-        getByName("main").jniLibs.srcDir("./jni/")
+        getByName("main").jniLibs.srcDirs += file("jni")
     }
 
     externalNativeBuild {
