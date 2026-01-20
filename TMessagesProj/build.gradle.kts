@@ -127,7 +127,9 @@ android {
     }
 
     sourceSets {
-        getByName("main") { jniLibs.srcDirs += "jni" }
+        getByName("main") {
+            jniLibs.srcDir("jni")
+        }
     }
 
     externalNativeBuild {
