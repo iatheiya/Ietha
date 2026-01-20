@@ -1,14 +1,18 @@
+// === FILE: TMessagesProj/build.gradle.kts ===
 plugins {
     alias(libs.plugins.androidLibrary)
 }
+
 import java.util.Properties
 import java.io.FileInputStream
+
 configurations {
     all {
         exclude(group = "com.google.firebase", module = "firebase-core")
         exclude(group = "androidx.recyclerview", module = "recyclerview")
     }
 }
+
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.palette)
@@ -52,17 +56,19 @@ dependencies {
             because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
         }
     }
-
     implementation(libs.recaptcha)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 }
+
 val osName = System.getProperty("os.name") ?: ""
 val isWindows = osName.lowercase().contains("win")
 val APP_VERSION_NAME: String = findProperty("APP_VERSION_NAME")?.toString() ?: "1.0.0"
+
 android {
     compileSdk = 35
     buildToolsVersion = "35.0.0"
     ndkVersion = "21.4.7075529"
+
     fun com.android.build.api.dsl.BuildType.applyCommon(
         minify: Boolean,
         versionNum: Int,
@@ -74,13 +80,11 @@ android {
         useFullProguardList: Boolean = true
     ) {
         isMinifyEnabled = minify
-
         try {
             ndk.debugSymbolLevel = "FULL"
         } catch (_: Throwable) {
         }
-
-        buildConfigField("String", "BUILD_VERSION_STRING", "\"$APP_VERSION_NAME\"")
+        `buildConfigField("String", "BUILD_VERSION_STRING", "\"$APP_VERSION_NAME\"")
         val appCenterLiteral = appCenterHash?.let { "\"$it\"" } ?: "\"\""
         val betaUrlLiteral = betaUrl?.let { "\"$it\"" } ?: "\"\""
 
@@ -101,12 +105,12 @@ android {
             proguardList.add(file("../TMessagesProj/proguard-rules.pro"))
         }
         proguardFiles(*proguardList.toTypedArray())
+        `
     }
 
     defaultConfig {
         minSdk = 21
-
-        vectorDrawables {
+        `vectorDrawables {
             generatedDensities?.addAll(listOf("mdpi", "hdpi", "xhdpi", "xxhdpi"))
         }
 
@@ -118,6 +122,7 @@ android {
                 arguments.addAll(listOf("-DANDROID_STL=c++_static", "-DANDROID_PLATFORM=android-21"))
             }
         }
+        `
     }
 
     buildFeatures {
@@ -125,20 +130,14 @@ android {
     }
 
     sourceSets {
-        getByName("main") {
-            jniLibs.srcDir("jni")
-        }
+        getByName("main") { jniLibs.srcDirs += "jni" }
     }
 
     externalNativeBuild {
-        cmake {
-            path = file("jni/CMakeLists.txt")
-        }
+        cmake { path = file("jni/CMakeLists.txt") }
     }
 
-    lint {
-        disable.addAll(listOf("MissingTranslation", "ExtraTranslation", "BlockedPrivateApi"))
-    }
+    lint { disable.addAll(listOf("MissingTranslation", "ExtraTranslation", "BlockedPrivateApi")) }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -159,8 +158,7 @@ android {
                 useFullProguardList = true
             )
         }
-
-        create("HA_private") {
+        `create("HA_private") {
             applyCommon(
                 minify = true,
                 versionNum = 1,
@@ -171,9 +169,8 @@ android {
                 jniDebugVal = false,
                 useFullProguardList = true
             )
-        }
-
-        create("HA_public") {
+        }`
+        `create("HA_public") {
             applyCommon(
                 minify = true,
                 versionNum = 4,
@@ -184,9 +181,8 @@ android {
                 jniDebugVal = false,
                 useFullProguardList = true
             )
-        }
-
-        create("HA_hardcore") {
+        }`
+        `create("HA_hardcore") {
             applyCommon(
                 minify = true,
                 versionNum = 5,
@@ -197,9 +193,8 @@ android {
                 jniDebugVal = false,
                 useFullProguardList = true
             )
-        }
-
-        create("standalone") {
+        }`
+        `create("standalone") {
             applyCommon(
                 minify = true,
                 versionNum = 6,
@@ -210,8 +205,7 @@ android {
                 jniDebugVal = false,
                 useFullProguardList = false
             )
-        }
-
+        }`
         getByName("release") {
             applyCommon(
                 minify = true,
@@ -239,6 +233,7 @@ fun getProps(propName: String): String {
     }
     return ""
 }
+
 tasks.register("checkVisibility") {
     doFirst {
         val isPrivateBuild = gradle.startParameter.taskNames.any {
@@ -249,7 +244,6 @@ tasks.register("checkVisibility") {
             throw GradleException("Building public version of private code!")
         }
     }
-
     doLast {
         if (gradle.startParameter.taskNames.any { it.contains("HA_public") }) {
             val privateBuild = file("${projectDir}_AppHockeyApp/afat/HA_private/Telegram-Beta.apk")
@@ -259,6 +253,7 @@ tasks.register("checkVisibility") {
         }
     }
 }
+
 tasks.named("preBuild") {
     dependsOn("checkVisibility")
 }
