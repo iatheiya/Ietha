@@ -91,7 +91,7 @@ android {
       isMinifyEnabled = true
       isShrinkResources = false
       isMultiDexEnabled = true
-      proguardFiles(getDefaultProguardFile("proguard-android.txt"), "../TMessagesProj/proguard-rules.pro")
+      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "../TMessagesProj/proguard-rules.pro")
       ndk.debugSymbolLevel = "FULL"
     }
     getByName("release") {
