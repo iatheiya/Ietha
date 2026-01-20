@@ -2,7 +2,8 @@ plugins {
   alias(libs.plugins.androidLibrary)
   alias(libs.plugins.googleServices)
 }
-import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+import java.util.Properties
+import java.io.FileInputStream
 repositories {
   mavenCentral()
   google()
@@ -57,7 +58,8 @@ dependencies {
   implementation(libs.recaptcha)
   coreLibraryDesugaring(libs.desugar.jdk.libs)
 }
-val isWindows = DefaultNativePlatform.getCurrentOperatingSystem().toFamilyName() == OperatingSystemFamily.WINDOWS
+val osName = System.getProperty("os.name") ?: ""
+val isWindows = osName.lowercase().contains("win")
 android {
   compileSdk = 35
   buildToolsVersion = "35.0.0"
@@ -143,7 +145,7 @@ android {
       ndk.debugSymbolLevel = "FULL"
       buildConfigField("String", "BUILD_VERSION_STRING", "\"$APP_VERSION_NAME\"")
       buildConfigField("String", "APP_CENTER_HASH", getProps("APP_CENTER_HASH_PUBLIC"))
-      buildConfigField("String", "BETA_URL", getProps("BETA_PUBLIC_URL"))
+      buildConfigField("String", "BETA_URL", getProps("APP_PUBLIC_URL"))
       buildConfigField("boolean", "DEBUG_VERSION", "true")
       buildConfigField("boolean", "DEBUG_PRIVATE_VERSION", "false")
       buildConfigField("boolean", "BUILD_HOST_IS_WINDOWS", isWindows.toString())
