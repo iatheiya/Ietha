@@ -5,11 +5,6 @@ plugins {
 import java.util.Properties
 import java.io.FileInputStream
 
-repositories {
-    mavenCentral()
-    google()
-}
-
 configurations {
     all {
         exclude(group = "com.google.firebase", module = "firebase-core")
@@ -136,7 +131,7 @@ android {
 
     sourceSets {
         getByName("main") {
-            jniLibs.setSrcDirs(listOf("jni"))
+            jniLibs.srcDir("jni")
         }
     }
 
