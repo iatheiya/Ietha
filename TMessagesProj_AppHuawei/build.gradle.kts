@@ -3,12 +3,6 @@ plugins {
   alias(libs.plugins.huaweiAgconnect)
 }
 
-repositories {
-  mavenCentral()
-  google()
-  maven { url = uri("https://developer.huawei.com/repo/") }
-}
-
 configurations {
   "compile".exclude(group = "com.google.firebase", module = "firebase-core")
   "compile".exclude(group = "androidx.recyclerview", module = "recyclerview")
